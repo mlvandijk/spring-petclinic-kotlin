@@ -16,6 +16,9 @@
 package org.springframework.samples.petclinic.vet
 
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.dao.DataAccessException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -40,4 +43,14 @@ interface VetRepository : Repository<Vet, Int> {
     @Cacheable("vets")
     fun findAll(): Collection<Vet>
 
+    /**
+     * Retrieve all <code>Vet</code>s from data store in Pages
+     * @param pageable
+     * @return
+     * @throws DataAccessException
+     */
+    @Transactional(readOnly = true)
+    @Cacheable("vets")
+    @Throws(DataAccessException::class)
+    fun findAll(pageable: Pageable?): Page<Vet?>?
 }
