@@ -32,7 +32,7 @@ class VetController(val vetRepository: VetRepository) {
     @GetMapping("/vets.html")
     fun showHtmlVetList(model: MutableMap<String, Any>): String {
         val vets = Vets(vetRepository.findAll())
-        model.put("vets", vets)
+        model["vets"] = vets
         return "vets/vetList"
     }
 
@@ -40,7 +40,7 @@ class VetController(val vetRepository: VetRepository) {
     @ResponseBody
     fun showJsonVetList(): Vets =
             // Here we are returning an object of type 'Vets' rather than a collection of Vet
-            // objects so it is simpler for Json/Object mapping
+            // objects, so it is simpler for Json/Object mapping
             Vets(vetRepository.findAll())
 
 

@@ -24,7 +24,7 @@ import org.springframework.validation.Validator
  * `Validator` for `Pet` forms.
  *
  *
- * We're not using Bean Validation annotations here because it is easier to define such validation rule in Java.
+ * We're not using Bean Validation annotations here because it is easier to define such a validation rule in Java.
  *
  *
  * @author Ken Krebs
@@ -45,7 +45,7 @@ class PetValidator : Validator {
             errors.rejectValue("type", REQUIRED, REQUIRED)
         }
 
-        // birth date validation
+        // birthdate validation
         if (pet.birthDate == null) {
             errors.rejectValue("birthDate", REQUIRED, REQUIRED)
         }
