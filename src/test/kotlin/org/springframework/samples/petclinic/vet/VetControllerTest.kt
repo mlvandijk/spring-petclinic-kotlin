@@ -4,10 +4,15 @@ import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -40,7 +45,8 @@ class VetControllerTest {
         radiology.id = 1
         radiology.name = "radiology"
         helen.addSpecialty(radiology)
-        given(this.vets.findAll()).willReturn(listOf(james, helen))
+        val page: Page<Vet?> = PageImpl(listOf(james, helen))
+        given(this.vets.findAll(any())).willReturn(page)
     }
 
     @Test
@@ -54,7 +60,7 @@ class VetControllerTest {
 
     @Test
     fun testVetsEndpointPagination() {
-        val page = 2
+        val page = 1
         mockMvc.perform(get("/vets.html").param("page", page.toString()))
             .andExpect(status().isOk)
             .andExpect(view().name("vets/vetList"))

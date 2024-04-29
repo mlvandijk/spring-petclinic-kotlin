@@ -39,7 +39,7 @@ class VetController(val vetRepository: VetRepository) {
 
     @GetMapping("/vets.html")
     fun showHtmlVetList(@RequestParam(defaultValue = "1") page: Int, model: Model): String {
-        val paginated = findPaginated(page)
+        val paginated = findPrettyPage(page)
         val vets = Vets(vetRepository.findAll())
         model["vets"] = vets
         return addPaginationModel(page, paginated, model)
@@ -52,6 +52,29 @@ class VetController(val vetRepository: VetRepository) {
         model.addAttribute("totalItems", paginated?.totalElements)
         model.addAttribute("listVets", listVets)
         return "vets/vetList"
+    }
+
+    private fun findPrettyPage(page: Int): Page<Vet?> {
+        val vetPage = findPaginated(page)
+
+        val vetList: List<Vet?> = ArrayList(vetPage!!.toList())
+        while (!isPretty(vetList)) {
+            Collections.shuffle(vetList)
+        }
+
+        val pageable: Pageable = PageRequest.of(page - 1, 5)
+        return PageImpl(vetList, pageable, vetPage.totalElements)
+    }
+
+    private fun isPretty(vets: List<Vet?>): Boolean {
+        if (vets.size < 2) {
+            return true
+        }
+
+        if (vets[0]!!.lastName <= vets[1]!!.lastName) {
+            return isPretty(vets.subList(1, vets.size - 1))
+        }
+        return false
     }
 
     private fun findPaginated(page: Int): Page<Vet?>? {
